@@ -1,0 +1,53 @@
+##
+# This file is part of the IVMS Online.
+#
+# @copyright 2023 © by Rafał Wrzeszcz - Wrzasq.pl.
+##
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+Transform:
+    - "WrzasqPlCformMacro"
+    - "AWS::Serverless-2016-10-31"
+
+Parameters:
+    ReleaseVersion:
+        Type: "String"
+
+    LicensesTableName:
+        Type: "String"
+
+    LicensesTableArn:
+        Type: "String"
+
+Resources:
+    Deleter:
+        Type: "AWS::Serverless::Function"
+        Properties:
+            Runtime: "provided.al2"
+            CodeUri:
+                Bucket: "chilldev-repository"
+                Key: !Sub "sam/ivms-online/ivms-licenses-service/${ReleaseVersion}/licenses-deleter.zip"
+            Handler: "NOT_USED"
+            MemorySize: 384
+            Environment:
+                Variables:
+                    RUST_LOG: "info"
+                    LICENSES_TABLE: !Ref "LicensesTableName"
+            Timeout: 30
+            Tracing: "Active"
+            Policies:
+                -
+                    Version: "2012-10-17"
+                    Statement:
+                        -
+                            Action:
+                                - "dynamodb:DeleteItem"
+                            Effect: "Allow"
+                            Resource:
+                                - !Ref "LicensesTableArn"
+            LogsRetentionInDays: 14
+
+Outputs:
+    LambdaArn:
+        Value: !GetAtt "Deleter.Arn"
