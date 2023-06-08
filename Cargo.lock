@@ -1198,7 +1198,7 @@ dependencies = [
 
 [[package]]
 name = "integration-tests"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "async-trait",
  "aws-config",
@@ -1315,7 +1315,7 @@ checksum = "f92be4933c13fd498862a9e02a3055f8a8d9c039ce33db97306fd5a6caa7f29b"
 
 [[package]]
 name = "licenses-core"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "async-trait",
  "aws-config",
@@ -1344,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "licenses-creator"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "lambda_runtime",
@@ -1357,7 +1357,7 @@ dependencies = [
 
 [[package]]
 name = "licenses-deleter"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "lambda_runtime",
  "licenses-core",
@@ -1369,7 +1369,7 @@ dependencies = [
 
 [[package]]
 name = "licenses-fetcher"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "lambda_runtime",
@@ -1382,7 +1382,7 @@ dependencies = [
 
 [[package]]
 name = "licenses-lister"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "lambda_runtime",
