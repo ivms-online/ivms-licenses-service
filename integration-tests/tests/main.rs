@@ -7,7 +7,7 @@
 #![feature(async_closure, future_join)]
 
 use aws_config::load_from_env;
-use aws_sdk_dynamodb::types::AttributeValue::{L, M, N, S};
+use aws_sdk_dynamodb::types::AttributeValue::{N, S};
 use aws_sdk_dynamodb::Client as DynamoDbClient;
 use aws_sdk_lambda::error::SdkError;
 use aws_sdk_lambda::operation::invoke::{InvokeError, InvokeOutput};
@@ -253,14 +253,14 @@ async fn i_fetch_license(world: &mut TestWorld, license_key: String, vessel_id: 
     );
 }
 
-#[when(expr = "I list licenses of for vessel {string} customer {string}")]
+#[when(expr = "I list licenses for vessel {string} of customer {string}")]
 async fn i_list_licenses(world: &mut TestWorld, vessel_id: String, customer_id: String) {
     world.invoke_response = Some(list_licenses(world, customer_id, vessel_id, None).await);
 }
 
-#[when(expr = "I list licenses of for vessel {string} customer {string} with page token {string}")]
+#[when(expr = "I list licenses for vessel {string} of customer {string} with page token {string}")]
 async fn i_list_vessels_page(world: &mut TestWorld, vessel_id: String, customer_id: String, page_token: String) {
-    world.invoke_response = Some(list_vessels(world, customer_id, vessel_id, Some(page_token)).await);
+    world.invoke_response = Some(list_licenses(world, customer_id, vessel_id, Some(page_token)).await);
 }
 
 // Then …
@@ -271,8 +271,8 @@ async fn license_does_not_exist(world: &mut TestWorld, license_key: String, vess
         .dynamodb
         .get_item()
         .table_name(world.licenses_table.as_str())
-        .item("customerAndVesselId", S(format!("{customer_id}:{vessel_id}")))
-        .item("licenseKey", S(license_key))
+        .key("customerAndVesselId", S(format!("{customer_id}:{vessel_id}")))
+        .key("licenseKey", S(license_key))
         .send()
         .await
         .unwrap()
@@ -325,7 +325,7 @@ async fn i_can_read_license_count(world: &mut TestWorld, count: usize) {
     )
     .unwrap();
 
-    assert_eq!(count, response["count"].as_str().unwrap());
+    assert_eq!(count as u64, response["count"].as_u64().unwrap());
 }
 
 #[then(expr = "I can read license expiration date as {string}")]
@@ -363,8 +363,8 @@ async fn i_can_read_license_key_after_create(world: &mut TestWorld) {
 
 #[then(expr = "License with that key exists with count {int} and expiration date {string}")]
 async fn license_with_that_key_exists(world: &mut TestWorld, count: usize, expires_at: String) {
-    let customer_id = world.customer_id.unwrap();
-    let vessel_id = world.vessel_id.unwrap();
+    let customer_id = world.customer_id.clone().unwrap();
+    let vessel_id = world.vessel_id.clone().unwrap();
 
     let license = world
         .dynamodb
@@ -394,7 +394,7 @@ async fn i_can_read_list_of_licenses(world: &mut TestWorld, count: usize) {
     assert_eq!(count, licenses.len());
 }
 
-#[then(expr = "License at position {int} has name {string}")]
+#[then(expr = "License at position {int} has key {string}")]
 async fn license_at_position_has_key(world: &mut TestWorld, position: usize, key: String) {
     let licenses = extract_list(&world.invoke_response);
 
