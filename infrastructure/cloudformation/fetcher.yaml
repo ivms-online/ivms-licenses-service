@@ -60,5 +60,3 @@ Resources:
 Outputs:
     LambdaArn:
         Value: !GetAtt "Fetcher.Arn"
-        Export:
-            Name: !Sub "${ProjectKey}:${ProjectVersion}:${ComponentId}:FetcherLambda:Arn"

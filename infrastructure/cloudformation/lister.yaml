@@ -60,5 +60,3 @@ Resources:
 Outputs:
     LambdaArn:
         Value: !GetAtt "Lister.Arn"
-        Export:
-            Name: !Sub "${ProjectKey}:${ProjectVersion}:${ComponentId}:ListerLambda:Arn"
