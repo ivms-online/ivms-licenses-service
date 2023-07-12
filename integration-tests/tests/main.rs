@@ -259,7 +259,7 @@ async fn i_list_licenses(world: &mut TestWorld, vessel_id: String, customer_id: 
 }
 
 #[when(expr = "I list licenses for vessel {string} of customer {string} with page token {string}")]
-async fn i_list_vessels_page(world: &mut TestWorld, vessel_id: String, customer_id: String, page_token: String) {
+async fn i_list_licenses_page(world: &mut TestWorld, vessel_id: String, customer_id: String, page_token: String) {
     world.invoke_response = Some(list_licenses(world, customer_id, vessel_id, Some(page_token)).await);
 }
 
